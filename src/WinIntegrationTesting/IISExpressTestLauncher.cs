@@ -457,7 +457,13 @@ namespace WinIntegrationTesting
             // deleting the temp folder (after it realizes IIS Express has stopped).
             if (this.iisExpressProcess != null)
             {
-                this.iisExpressProcess.Kill();
+                try
+                {
+                    this.iisExpressProcess.Kill();
+                }
+                catch
+                {
+                }
                 this.iisExpressProcess = null;
             }
         }
