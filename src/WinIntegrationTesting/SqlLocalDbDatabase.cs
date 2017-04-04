@@ -126,9 +126,10 @@ namespace WinIntegrationTesting
                 string tempDbFolderName = Path.Combine(folderName, "TempDbs");
                 if (!Directory.Exists(tempDbFolderName))
                 {
-                    Directory.CreateDirectory(tempDbFolderName);
-                    databaseFolderToUse = tempDbFolderName;
+                    Directory.CreateDirectory(tempDbFolderName);                    
                 }
+
+                databaseFolderToUse = tempDbFolderName;
             }
             else
             {
