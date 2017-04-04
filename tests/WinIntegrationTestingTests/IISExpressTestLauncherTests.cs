@@ -22,14 +22,20 @@ namespace WinIntegrationTestingTests
                 string solutionFolder = VisualStudioHelper.FindSolutionFolderForAssembly(typeof(VisualStudioHelperTests).Assembly);
                 string testSiteProjectPath = Path.Combine(solutionFolder, "tests", "SampleIISExpressSite");
 
-                siteInstance = IISExpressTestLauncher.StartIISExpress(
-                    new StartIISExpressOptions
-                    {
-                        WebProjectFolderPath = testSiteProjectPath,
-                        HttpPort = 9580
-                    });
+                var siteStartOptions = new StartIISExpressOptions
+                {
+                    WebProjectFolderPath = testSiteProjectPath,
+                    HttpPort = 9580,                    
+                };
 
-                // TODO: Add checks via Selenium for custom settings being used.
+                siteStartOptions.AppSettings["someExistingSetting"] = "MyModifiedExistingSetting";
+                siteStartOptions.AppSettings["someNewSetting"] = "MyNewSetting";
+
+                siteInstance = IISExpressTestLauncher.StartIISExpress(siteStartOptions);
+
+                // TODO: Add checks via Selenium for custom settings, someExistingSetting and someNewSetting, being used.
+                // text for "#some-existing-setting" == "MyModifiedExistingSetting"
+                // text for "#some-new-setting" == "MyNewSetting"
 
                 Assert.IsTrue(true);
             }
