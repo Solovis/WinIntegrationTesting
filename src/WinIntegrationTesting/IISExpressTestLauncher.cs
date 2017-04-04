@@ -193,7 +193,7 @@ namespace WinIntegrationTesting
             }
             else
             {
-                string solutionFolder = Path.GetDirectoryName(this.options.WebProjectFolderPath);
+                string solutionFolder = VisualStudioHelper.FindSolutionFolderForSubFolder(this.options.WebProjectFolderPath);
                 string defaultApplicationHostConfigPath = Path.Combine(solutionFolder, ".vs", "config", "applicationhost.config");
 
                 if (!File.Exists(defaultApplicationHostConfigPath))

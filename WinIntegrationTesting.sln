@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EE890F95
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinIntegrationTestingTests", "tests\WinIntegrationTestingTests\WinIntegrationTestingTests.csproj", "{F5904F04-8A89-42D4-A241-7415D784C9AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleIISExpressSite", "tests\SampleIISExpressSite\SampleIISExpressSite.csproj", "{4E6D6241-CA98-435D-A127-A039653846F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,11 +25,16 @@ Global
 		{F5904F04-8A89-42D4-A241-7415D784C9AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5904F04-8A89-42D4-A241-7415D784C9AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5904F04-8A89-42D4-A241-7415D784C9AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E6D6241-CA98-435D-A127-A039653846F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E6D6241-CA98-435D-A127-A039653846F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E6D6241-CA98-435D-A127-A039653846F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E6D6241-CA98-435D-A127-A039653846F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{F5904F04-8A89-42D4-A241-7415D784C9AB} = {EE890F95-488A-403C-A826-5F1843A86A9E}
+		{4E6D6241-CA98-435D-A127-A039653846F5} = {EE890F95-488A-403C-A826-5F1843A86A9E}
 	EndGlobalSection
 EndGlobal
