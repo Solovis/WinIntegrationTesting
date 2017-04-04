@@ -45,7 +45,7 @@ namespace IntegrationTestingWithSelenium
         {
             var objRef = new RemoteJsRef { webDriver = webDriver };
             
-            var idJson = "\"" + objRef.id + "\"";
+            var idJson = ToJson(objRef.id);
 
             var scriptToExecute =
                 "var result = (function(){" + script + "})();\r\n" +
@@ -75,19 +75,18 @@ namespace IntegrationTestingWithSelenium
         /// </summary>     
         public static RemoteJsRef GetWithCssSelector(RemoteWebDriver webDriver, string cssSelector, string containerScript = null, TimeSpan? maxWait = null)
         {
-            var objRef = TryGetWithCssSelector(webDriver, cssSelector, containerScript: containerScript, maxWait: maxWait);
-            if (objRef == null)
+            var jsRef = TryGetWithCssSelector(webDriver, cssSelector, containerScript: containerScript, maxWait: maxWait);
+            if (jsRef == null)
             {
                 throw new Exception("RemoteJsRef not found for css selector: " + cssSelector);
             }
 
-            return objRef;
+            return jsRef;
         }
 
         public static RemoteJsRef TryGetWithCssSelector(RemoteWebDriver webDriver, string cssSelector, string containerScript = null, TimeSpan? maxWait = null)
-        {
-            // TODO: Actually escape css selector string.
-            string cssSelectorJson = "\"" + cssSelector + "\"";
+        {            
+            string cssSelectorJson = ToJson(cssSelector);
             
             StringBuilder scriptSb = new StringBuilder();          
             if (containerScript != null)
@@ -104,6 +103,11 @@ namespace IntegrationTestingWithSelenium
             string script = scriptSb.ToString();
 
             return TryGetWithScript(webDriver, script, maxWait);
+        }
+
+        private static string ToJson(object value)
+        {
+            return Newtonsoft.Json.JsonConvert.ToString(value);
         }
 
         public RemoteWebDriver WebDriver
@@ -131,6 +135,27 @@ namespace IntegrationTestingWithSelenium
                 }
             }
         }
+
+        /// <summary>
+        /// Attempts to serialize the reference using JSON.stringify within the browser and retrieves the value.
+        /// </summary>
+        public string AsJson
+        {
+            get
+            {
+                string script = $"var obj = {this.scriptRef}; return JSON.stringify({this.scriptRef});";
+                object result = this.webDriver.ExecuteScript(script);
+                if (result is string)
+                {
+                    return (string)result;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        
 
         public void Dispose()
         {

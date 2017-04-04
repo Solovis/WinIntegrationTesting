@@ -55,6 +55,11 @@ namespace WinIntegrationTestingTests
 
                     string someNewSettingText = someNewSettingDiv.AsWebElement.Text;
                     Assert.AreEqual("MyNewSetting", someNewSettingText);
+
+                    var someStoredValue = RemoteJsRef.GetWithScript(webDriver, "return window.someStoredValue;");
+                    string someStoredValueJson = someStoredValue.AsJson;
+                    dynamic someStoredValueJObject = Newtonsoft.Json.JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(someStoredValueJson);
+                    Assert.AreEqual("world", someStoredValueJObject.hello);
                 }                
             }
             finally
