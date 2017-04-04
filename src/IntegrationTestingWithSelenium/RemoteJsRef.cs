@@ -1,0 +1,153 @@
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace IntegrationTestingWithSelenium
+{
+    public class RemoteJsRef : IRemoteJsRef
+    {
+        private readonly string id;
+        private RemoteWebDriver webDriver;
+        private string scriptRef;
+
+        private RemoteJsRef()
+        {
+            this.id = Guid.NewGuid().ToString("N");
+        }
+
+
+        /// <summary>
+        /// Retrieve RemoteJsRef or throw exception if unable too. Script will be used as a function body and should
+        /// return a non-null value. The script will be rerurn periodically up to the maxWait time until
+        /// a value is returned or time expires.
+        /// </summary>       
+        public static RemoteJsRef GetWithScript(RemoteWebDriver webDriver, string script, TimeSpan? maxWait = null)
+        {
+            var objRef = TryGetWithScript(webDriver, script, maxWait);
+            if (objRef == null)
+            {
+                throw new Exception("RemoteJsRef not found for script: " + script);
+            }
+
+            return objRef;
+        }
+
+        /// <summary>
+        /// Retrieve RemoteJsRef if able too (null returned will be returned if retrieval fails). Script will be used as a function body and should
+        /// return a non-null value. The script will be rerurn periodically up to the maxWait time until
+        /// a value is returned or time expires.
+        /// </summary>
+        public static RemoteJsRef TryGetWithScript(RemoteWebDriver webDriver, string script, TimeSpan? maxWait = null)
+        {
+            var objRef = new RemoteJsRef { webDriver = webDriver };
+            
+            var idJson = "\"" + objRef.id + "\"";
+
+            var scriptToExecute =
+                "var result = (function(){" + script + "})();\r\n" +
+                "if (result === null || typeof result === \"undefined\"){\r\n" +
+                "    return false;\r\n" +
+                "}\r\n" +
+                "if (!window.__TestRemoteJsRef){\r\n" +
+                "    window.__TestRemoteJsRef = {};\r\n" +
+                "}" +
+                "window.__TestRemoteJsRef[" + idJson + "] = result;\r\n" +
+                "return true;\r\n";
+
+            objRef.scriptRef = "(window.__TestRemoteJsRef[" + idJson + "])";
+
+            if (RemoteWebDriverHelper.TryWaitUntilScriptIsTrue(webDriver, scriptToExecute, maxWait))
+            {
+                return objRef;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve ObjRef for sizzle selector or throw exception if unable to.
+        /// </summary>     
+        public static RemoteJsRef GetWithCssSelector(RemoteWebDriver webDriver, string cssSelector, string containerScript = null, TimeSpan? maxWait = null)
+        {
+            var objRef = TryGetWithCssSelector(webDriver, cssSelector, containerScript: containerScript, maxWait: maxWait);
+            if (objRef == null)
+            {
+                throw new Exception("RemoteJsRef not found for css selector: " + cssSelector);
+            }
+
+            return objRef;
+        }
+
+        public static RemoteJsRef TryGetWithCssSelector(RemoteWebDriver webDriver, string cssSelector, string containerScript = null, TimeSpan? maxWait = null)
+        {
+            // TODO: Actually escape css selector string.
+            string cssSelectorJson = "\"" + cssSelector + "\"";
+            
+            StringBuilder scriptSb = new StringBuilder();          
+            if (containerScript != null)
+            {
+                scriptSb.Append($"var container = {containerScript};");                
+            }
+            else
+            {
+                scriptSb.Append($"var container = document;");
+            }
+            scriptSb.Append($"var match = container.querySelector({cssSelectorJson});");
+            scriptSb.Append("return match;");
+
+            string script = scriptSb.ToString();
+
+            return TryGetWithScript(webDriver, script, maxWait);
+        }
+
+        public RemoteWebDriver WebDriver
+        {
+            get { return this.webDriver; }
+        }
+
+        public string ScriptRef
+        {
+            get { return this.scriptRef; }
+        }       
+
+        public IWebElement AsWebElement
+        {
+            get
+            {
+                var result = this.webDriver.ExecuteScript("return " + this.scriptRef);
+                if (result is IWebElement)
+                {
+                    return (IWebElement)result;
+                }
+                else
+                {
+                    throw new Exception("RemoteJsRef does not refer to a web element.");
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                if (this.webDriver != null)
+                {
+                    var scriptToExecute = "try { delete " + this.scriptRef + "; } catch (ex) {}";
+                    var result = this.webDriver.ExecuteScript(scriptToExecute);
+                    this.webDriver = null;
+                    this.scriptRef = null;
+                }
+            }
+            catch
+            {
+                // We don't really care about an exception thrown here; we just don't want them to halt the test.
+            }
+        }
+    }
+}

@@ -62,6 +62,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\IntegrationTestingWithSelenium\IntegrationTestingWithSelenium.csproj">
+      <Project>{736baf2c-eac6-4eba-89aa-99a36e6a53f4}</Project>
+      <Name>IntegrationTestingWithSelenium</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\WinIntegrationTesting\WinIntegrationTesting.csproj">
       <Project>{69059424-3efe-47f9-bab5-342a3dbef025}</Project>
       <Name>WinIntegrationTesting</Name>

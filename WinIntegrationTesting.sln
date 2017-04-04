@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinIntegrationTestingTests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleIISExpressSite", "tests\SampleIISExpressSite\SampleIISExpressSite.csproj", "{4E6D6241-CA98-435D-A127-A039653846F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTestingWithSelenium", "src\IntegrationTestingWithSelenium\IntegrationTestingWithSelenium.csproj", "{736BAF2C-EAC6-4EBA-89AA-99A36E6A53F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{4E6D6241-CA98-435D-A127-A039653846F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E6D6241-CA98-435D-A127-A039653846F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E6D6241-CA98-435D-A127-A039653846F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{736BAF2C-EAC6-4EBA-89AA-99A36E6A53F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{736BAF2C-EAC6-4EBA-89AA-99A36E6A53F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{736BAF2C-EAC6-4EBA-89AA-99A36E6A53F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{736BAF2C-EAC6-4EBA-89AA-99A36E6A53F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using IntegrationTestingWithSelenium;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.PhantomJS;
 using System;
 using System.Collections.Generic;
@@ -45,14 +46,14 @@ namespace WinIntegrationTestingTests
                 using (var webDriver = new PhantomJSDriver(driverService))
                 {
                     webDriver.Navigate().GoToUrl("http://localhost:" + siteStartOptions.HttpPort);
-                    
-                    // TODO: Add helper that waits for something to be present on page instead of relying on arbitrary wait.
-                    Thread.Sleep(3000);
 
-                    string someExistingSettingText = webDriver.FindElementById("some-existing-setting").Text;
+                    var someExistingSettingDiv = RemoteJsRef.GetWithCssSelector(webDriver, "#some-existing-setting", maxWait: TimeSpan.FromSeconds(5));
+                    var someNewSettingDiv = RemoteJsRef.GetWithCssSelector(webDriver, "#some-new-setting", maxWait: TimeSpan.FromSeconds(1));
+
+                    string someExistingSettingText = someExistingSettingDiv.AsWebElement.Text;
                     Assert.AreEqual("MyModifiedExistingSetting", someExistingSettingText);
 
-                    string someNewSettingText = webDriver.FindElementById("some-new-setting").Text;
+                    string someNewSettingText = someNewSettingDiv.AsWebElement.Text;
                     Assert.AreEqual("MyNewSetting", someNewSettingText);
                 }                
             }
