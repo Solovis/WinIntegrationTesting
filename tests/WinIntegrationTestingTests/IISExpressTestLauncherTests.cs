@@ -12,22 +12,34 @@ namespace WinIntegrationTestingTests
     [TestClass]
     public class IISExpressTestLauncherTests
     {
-        //[TestMethod]
-        // TODO: Enable as an actual test after adding way to stop the site programmatically
-        // and using Selenium to validate some customized app settings.
+        [TestMethod]
         public void TestStartIISExpress()
         {
-            string solutionFolder = VisualStudioHelper.FindSolutionFolderForAssembly(typeof(VisualStudioHelperTests).Assembly);
-            string testSiteProjectPath = Path.Combine(solutionFolder, "tests", "SampleIISExpressSite");
+            IISExpressTestLauncher siteInstance = null;
 
-            var siteInstance = IISExpressTestLauncher.StartIISExpress(
-                new StartIISExpressOptions
+            try
+            {
+                string solutionFolder = VisualStudioHelper.FindSolutionFolderForAssembly(typeof(VisualStudioHelperTests).Assembly);
+                string testSiteProjectPath = Path.Combine(solutionFolder, "tests", "SampleIISExpressSite");
+
+                siteInstance = IISExpressTestLauncher.StartIISExpress(
+                    new StartIISExpressOptions
+                    {
+                        WebProjectFolderPath = testSiteProjectPath,
+                        HttpPort = 9580
+                    });
+
+                // TODO: Add checks via Selenium for custom settings being used.
+
+                Assert.IsTrue(true);
+            }
+            finally
+            {
+                if (siteInstance != null)
                 {
-                    WebProjectFolderPath = testSiteProjectPath,
-                    HttpPort = 9580                   
-                });
-
-            Assert.IsTrue(true);
+                    siteInstance.Stop();
+                }
+            }
         }
     }
 }

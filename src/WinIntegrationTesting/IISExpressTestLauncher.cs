@@ -448,6 +448,19 @@ namespace WinIntegrationTesting
                 Process.Start(commandStartInfo);
             }
         }
+
+
+
+        public void Stop()
+        {
+            // Kill the process hosting the site, which will in turn result in the second copy of WinIntegrationTesting.exe
+            // deleting the temp folder (after it realizes IIS Express has stopped).
+            if (this.iisExpressProcess != null)
+            {
+                this.iisExpressProcess.Kill();
+                this.iisExpressProcess = null;
+            }
+        }
     }
 
 
