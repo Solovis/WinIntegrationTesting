@@ -71,7 +71,7 @@ namespace IntegrationTestingWithSelenium
         }
 
         /// <summary>
-        /// Retrieve ObjRef for sizzle selector or throw exception if unable to.
+        /// Retrieve RemoteJsRef for CSS selector or throw exception if unable to.
         /// </summary>     
         public static RemoteJsRef GetWithCssSelector(RemoteWebDriver webDriver, string cssSelector, string containerScript = null, TimeSpan? maxWait = null)
         {
@@ -84,6 +84,9 @@ namespace IntegrationTestingWithSelenium
             return jsRef;
         }
 
+        /// <summary>
+        /// Retrieve RemoteJsRef for CSS selector or return null if unable to.
+        /// </summary>    
         public static RemoteJsRef TryGetWithCssSelector(RemoteWebDriver webDriver, string cssSelector, string containerScript = null, TimeSpan? maxWait = null)
         {            
             string cssSelectorJson = ToJson(cssSelector);
@@ -104,6 +107,45 @@ namespace IntegrationTestingWithSelenium
 
             return TryGetWithScript(webDriver, script, maxWait);
         }
+
+
+        /// <summary>
+        /// Retrieve RemoteJsRef for JQuery selector or throw exception if unable to (requires JQuery to already be loaded into page).
+        /// </summary>
+        public static RemoteJsRef GetWithJQuerySelector(RemoteWebDriver webDriver, string sizzle, string containerScript = null, TimeSpan? maxWait = null)
+        {
+            var objRef = TryGetWithJQuerySelector(webDriver, sizzle, containerScript: containerScript, maxWait: maxWait);
+            if (objRef == null)
+            {
+                throw new Exception("RemoteJsRef not found for JQuery selector: " + sizzle);
+            }
+
+            return objRef;
+        }
+
+        /// <summary>
+        /// Retrieve RemoteJsRef for JQuery selector or return null if unable to (requires JQuery to already be loaded into page).
+        /// </summary>
+        public static RemoteJsRef TryGetWithJQuerySelector(RemoteWebDriver webDriver, string sizzle, string containerScript = null, TimeSpan? maxWait = null)
+        {            
+            string escapedSizzle = ToJson(sizzle);
+
+            StringBuilder scriptSb = new StringBuilder();
+            scriptSb.Append("var el = $(");
+            scriptSb.Append(escapedSizzle);
+            if (containerScript != null)
+            {
+                scriptSb.Append(", ");
+                scriptSb.Append(containerScript);
+            }
+            scriptSb.Append("); ");
+            scriptSb.Append("if (el.length) { return el.get(0); } else { return null; }");
+
+            string script = scriptSb.ToString();
+
+            return TryGetWithScript(webDriver, script, maxWait);
+        }
+
 
         private static string ToJson(object value)
         {
